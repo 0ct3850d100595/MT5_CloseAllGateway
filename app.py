@@ -69,3 +69,13 @@ def create_app(phone_token, ea_token, state=None):
         return jsonify(ok=True)
 
     return app
+
+
+if __name__ == "__main__":
+    import os
+
+    flask_app = create_app(
+        phone_token=os.environ.get("PHONE_TOKEN", "local-phone-token"),
+        ea_token=os.environ.get("EA_TOKEN", "local-ea-token"),
+    )
+    flask_app.run(host="127.0.0.1", port=5000)

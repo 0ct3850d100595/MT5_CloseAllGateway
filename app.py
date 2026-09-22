@@ -53,4 +53,19 @@ def create_app(phone_token, ea_token, state=None):
         app.state.trigger()
         return jsonify(ok=True)
 
+    @app.route("/api/poll")
+    def api_poll():
+        token = request.args.get("token", "")
+        if not _token_matches(token, ea_token):
+            abort(404)
+        return jsonify(pending=app.state.is_active(), issued_at=app.state.issued_at)
+
+    @app.route("/api/ack", methods=["POST"])
+    def api_ack():
+        token = request.headers.get("X-Auth-Token", "")
+        if not _token_matches(token, ea_token):
+            abort(404)
+        app.state.ack()
+        return jsonify(ok=True)
+
     return app

@@ -1,0 +1,34 @@
+# MT5 Close-All Gateway
+
+A tiny stateless Flask service that lets a phone remotely arm a "close all
+positions" flag, polled by an MT5 EA. See
+`MT5_TradeAssistant/docs/superpowers/specs/2026-09-22-close-all-remote-gateway-design.md`
+for the full design.
+
+## Local development
+
+    python -m venv venv
+    source venv/Scripts/activate   # Windows Git Bash
+    pip install -r requirements.txt
+    PHONE_TOKEN=local-phone-token EA_TOKEN=local-ea-token python app.py
+
+## Tests
+
+    pytest -v
+
+## Deploying to Render
+
+1. Push this repo to GitHub.
+2. In the Render dashboard: New -> Web Service -> connect this GitHub repo.
+3. Runtime: Python 3. Build command: `pip install -r requirements.txt`.
+   Start command: `gunicorn wsgi:app --workers 1` (already in `Procfile`,
+   Render should detect it automatically).
+4. Set environment variables `PHONE_TOKEN` and `EA_TOKEN` to two long random
+   strings (e.g. `python -c "import secrets; print(secrets.token_urlsafe(32))"`
+   run twice). Keep them secret - `PHONE_TOKEN` goes in the bookmarked URL,
+   `EA_TOKEN` goes into the MT5 EA's input parameter.
+5. Deploy. Render's free tier sleeps after 15 minutes idle; the first
+   request after that takes ~30-60s to wake it up. Upgrade to the paid
+   Starter plan if that delay becomes annoying.
+6. Bookmark `https://<your-app>.onrender.com/close-all?token=<PHONE_TOKEN>`
+   on your phone.

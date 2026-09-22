@@ -1,4 +1,7 @@
 import time
+import hmac
+
+from flask import Flask, request, abort, render_template, jsonify
 
 
 class CloseAllState:
@@ -23,3 +26,31 @@ class CloseAllState:
     def ack(self):
         self.pending = False
         self.issued_at = None
+
+
+def _token_matches(provided, expected):
+    if not expected:
+        return False
+    return hmac.compare_digest(provided or "", expected)
+
+
+def create_app(phone_token, ea_token, state=None):
+    app = Flask(__name__)
+    app.state = state if state is not None else CloseAllState()
+
+    @app.route("/close-all")
+    def close_all_page():
+        token = request.args.get("token", "")
+        if not _token_matches(token, phone_token):
+            abort(404)
+        return render_template("confirm.html", token=token)
+
+    @app.route("/api/trigger", methods=["POST"])
+    def api_trigger():
+        token = request.headers.get("X-Auth-Token", "")
+        if not _token_matches(token, phone_token):
+            abort(404)
+        app.state.trigger()
+        return jsonify(ok=True)
+
+    return app

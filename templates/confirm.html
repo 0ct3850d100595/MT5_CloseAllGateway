@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>緊急全決済</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding-top: 20vh; background:#111; color:#eee; }
+    button { font-size: 1.5rem; padding: 1em 2em; background:#c0392b; color:white; border:none; border-radius:8px; }
+    #result { margin-top: 2em; font-size: 1.2rem; }
+  </style>
+</head>
+<body>
+  <h1>MT5 緊急全決済</h1>
+  <button id="btn">全決済する</button>
+  <div id="result"></div>
+  <script>
+    const token = {{ token|tojson }};
+    document.getElementById('btn').addEventListener('click', () => {
+      if (!confirm('本当に全ポジションを決済しますか？')) return;
+      fetch('/api/trigger', {
+        method: 'POST',
+        headers: { 'X-Auth-Token': token }
+      }).then(r => r.json()).then(data => {
+        document.getElementById('result').textContent =
+          data.ok ? '送信しました。MT5からの通知をお待ちください。' : '送信に失敗しました。';
+      }).catch(() => {
+        document.getElementById('result').textContent = '通信エラーが発生しました。';
+      });
+    });
+  </script>
+</body>
+</html>

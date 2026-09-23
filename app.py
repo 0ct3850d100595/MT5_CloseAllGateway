@@ -77,7 +77,10 @@ def create_app(phone_token, ea_token, state=None):
 
     @app.route("/api/poll")
     def api_poll():
-        token = request.args.get("token", "")
+        # Prefers the header (matches /api/ack); falls back to the legacy
+        # query string during the EA-side rollout. Drop the fallback once
+        # the EA switches to header-only.
+        token = request.headers.get("X-Auth-Token") or request.args.get("token", "")
         if not _token_matches(token, ea_token):
             abort(404)
         return jsonify(pending=app.state.is_active(), issued_at=app.state.issued_at)

@@ -57,6 +57,22 @@ def test_poll_with_wrong_token_returns_404(client):
     assert resp.status_code == 404
 
 
+def test_poll_accepts_header_token(client):
+    resp = client.get("/api/poll", headers={"X-Auth-Token": "ea-secret"})
+    assert resp.status_code == 200
+    assert resp.get_json() == {"pending": False, "issued_at": None}
+
+
+def test_poll_with_wrong_header_token_returns_404(client):
+    resp = client.get("/api/poll", headers={"X-Auth-Token": "wrong"})
+    assert resp.status_code == 404
+
+
+def test_poll_header_token_takes_precedence_over_query_string(client):
+    resp = client.get("/api/poll?token=wrong", headers={"X-Auth-Token": "ea-secret"})
+    assert resp.status_code == 200
+
+
 def test_ack_clears_pending(client):
     client.post("/api/trigger", headers={"X-Auth-Token": "phone-secret"})
     ack_resp = client.post("/api/ack", headers={"X-Auth-Token": "ea-secret"})

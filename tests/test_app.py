@@ -83,3 +83,23 @@ def test_pending_expires_after_five_minutes():
     clock["t"] = 301.0
     resp = test_client.get("/api/poll?token=ea-secret")
     assert resp.get_json()["pending"] is False
+
+
+def test_manifest_correct_token_returns_200_with_expected_shape(client):
+    resp = client.get("/manifest.json?token=phone-secret")
+    assert resp.status_code == 200
+    body = resp.get_json()
+    assert body["start_url"] == "/close-all?token=phone-secret"
+    assert body["display"] == "standalone"
+    assert {"src": "/static/icons/icon-192.png", "sizes": "192x192", "type": "image/png"} in body["icons"]
+    assert {"src": "/static/icons/icon-512.png", "sizes": "512x512", "type": "image/png"} in body["icons"]
+
+
+def test_manifest_wrong_token_returns_404(client):
+    resp = client.get("/manifest.json?token=wrong")
+    assert resp.status_code == 404
+
+
+def test_manifest_missing_token_returns_404(client):
+    resp = client.get("/manifest.json")
+    assert resp.status_code == 404

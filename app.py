@@ -45,6 +45,24 @@ def create_app(phone_token, ea_token, state=None):
             abort(404)
         return render_template("confirm.html", token=token)
 
+    @app.route("/manifest.json")
+    def manifest():
+        token = request.args.get("token", "")
+        if not _token_matches(token, phone_token):
+            abort(404)
+        return jsonify({
+            "name": "MT5 緊急全決済",
+            "short_name": "全決済",
+            "start_url": f"/close-all?token={token}",
+            "display": "standalone",
+            "background_color": "#111111",
+            "theme_color": "#c0392b",
+            "icons": [
+                {"src": "/static/icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+                {"src": "/static/icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+            ],
+        })
+
     @app.route("/api/trigger", methods=["POST"])
     def api_trigger():
         token = request.headers.get("X-Auth-Token", "")

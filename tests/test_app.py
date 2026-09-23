@@ -116,3 +116,9 @@ def test_close_all_page_includes_manifest_and_apple_tags(client):
 def test_service_worker_is_served(client):
     resp = client.get("/static/sw.js")
     assert resp.status_code == 200
+
+
+def test_service_worker_served_from_root_with_root_scope(client):
+    resp = client.get("/sw.js")
+    assert resp.status_code == 200
+    assert "fetch" in resp.get_data(as_text=True)

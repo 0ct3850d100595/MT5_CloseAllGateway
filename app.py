@@ -1,7 +1,7 @@
 import time
 import hmac
 
-from flask import Flask, request, abort, render_template, jsonify
+from flask import Flask, request, abort, render_template, jsonify, send_from_directory
 
 
 class CloseAllState:
@@ -37,6 +37,10 @@ def _token_matches(provided, expected):
 def create_app(phone_token, ea_token, state=None):
     app = Flask(__name__)
     app.state = state if state is not None else CloseAllState()
+
+    @app.route("/sw.js")
+    def service_worker():
+        return send_from_directory(app.static_folder, "sw.js")
 
     @app.route("/close-all")
     def close_all_page():

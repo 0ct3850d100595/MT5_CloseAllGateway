@@ -1,5 +1,6 @@
 import time
 import hmac
+from urllib.parse import quote
 
 from flask import Flask, request, abort, render_template, jsonify, send_from_directory
 
@@ -57,7 +58,7 @@ def create_app(phone_token, ea_token, state=None):
         return jsonify({
             "name": "MT5 緊急全決済",
             "short_name": "全決済",
-            "start_url": f"/close-all?token={token}",
+            "start_url": f"/close-all?token={quote(token, safe='')}",
             "display": "standalone",
             "background_color": "#111111",
             "theme_color": "#c0392b",

@@ -121,6 +121,26 @@ def test_manifest_missing_token_returns_404(client):
     assert resp.status_code == 404
 
 
+def test_manifest_start_url_percent_encodes_special_characters_in_token():
+    app = create_app(phone_token="a&b=c", ea_token="ea-secret")
+    app.testing = True
+    test_client = app.test_client()
+
+    resp = test_client.get("/manifest.json", query_string={"token": "a&b=c"})
+    assert resp.status_code == 200
+    assert resp.get_json()["start_url"] == "/close-all?token=a%26b%3Dc"
+
+
+def test_close_all_page_manifest_link_percent_encodes_special_characters_in_token():
+    app = create_app(phone_token="a&b=c", ea_token="ea-secret")
+    app.testing = True
+    test_client = app.test_client()
+
+    resp = test_client.get("/close-all", query_string={"token": "a&b=c"})
+    body = resp.data.decode("utf-8")
+    assert 'href="/manifest.json?token=a%26b%3Dc"' in body
+
+
 def test_close_all_page_includes_manifest_and_apple_tags(client):
     resp = client.get("/close-all?token=phone-secret")
     body = resp.data.decode("utf-8")

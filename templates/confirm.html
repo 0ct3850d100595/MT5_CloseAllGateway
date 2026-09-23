@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>緊急全決済</title>
-  <link rel="manifest" href="{{ url_for('manifest') }}?token={{ token }}">
+  <link rel="manifest" href="{{ url_for('manifest') }}?token={{ token | urlencode }}">
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">

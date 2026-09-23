@@ -103,3 +103,16 @@ def test_manifest_wrong_token_returns_404(client):
 def test_manifest_missing_token_returns_404(client):
     resp = client.get("/manifest.json")
     assert resp.status_code == 404
+
+
+def test_close_all_page_includes_manifest_and_apple_tags(client):
+    resp = client.get("/close-all?token=phone-secret")
+    body = resp.data.decode("utf-8")
+    assert 'rel="manifest"' in body
+    assert 'apple-touch-icon' in body
+    assert 'apple-mobile-web-app-capable' in body
+
+
+def test_service_worker_is_served(client):
+    resp = client.get("/static/sw.js")
+    assert resp.status_code == 200

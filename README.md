@@ -32,3 +32,17 @@ for the full design.
    Starter plan if that delay becomes annoying.
 6. Bookmark `https://<your-app>.onrender.com/close-all?token=<PHONE_TOKEN>`
    on your phone.
+
+## スマホのホーム画面に追加する方法
+
+一度だけ、スマホのブラウザで `https://<your-app>.onrender.com/close-all?token=<PHONE_TOKEN>`
+を開いてください。
+
+**iOS (Safari):** 共有ボタン(四角から上矢印のアイコン)をタップ →
+「ホーム画面に追加」を選択。
+
+**Android (Chrome):** アドレスバー右側のメニュー(縦三点)をタップ →
+「アプリをインストール」または「ホーム画面に追加」を選択。
+
+以後はホーム画面に追加されたアイコンをタップするだけで、アドレスバーなしの
+全画面表示でボタン画面が直接開きます。確認ダイアログは今まで通り表示されます。

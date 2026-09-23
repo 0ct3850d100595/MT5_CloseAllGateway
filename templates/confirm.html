@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>緊急全決済</title>
+  <link rel="manifest" href="{{ url_for('manifest') }}?token={{ token }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#c0392b">
   <style>
     body { font-family: sans-serif; text-align: center; padding-top: 20vh; background:#111; color:#eee; }
     button { font-size: 1.5rem; padding: 1em 2em; background:#c0392b; color:white; border:none; border-radius:8px; }
@@ -28,6 +33,11 @@
         document.getElementById('result').textContent = '通信エラーが発生しました。';
       });
     });
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/static/sw.js').catch(() => {});
+    }
   </script>
 </body>
 </html>

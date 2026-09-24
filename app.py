@@ -58,13 +58,14 @@ def create_app(phone_token, ea_token, state=None):
         return jsonify({
             "name": "MT5 緊急全決済",
             "short_name": "全決済",
+            "id": "/close-all",
             "start_url": f"/close-all?token={quote(token, safe='')}",
             "display": "standalone",
             "background_color": "#111111",
             "theme_color": "#c0392b",
             "icons": [
-                {"src": "/static/icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
-                {"src": "/static/icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+                {"src": "/static/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+                {"src": "/static/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
             ],
         })
 

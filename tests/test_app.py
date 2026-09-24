@@ -106,9 +106,10 @@ def test_manifest_correct_token_returns_200_with_expected_shape(client):
     assert resp.status_code == 200
     body = resp.get_json()
     assert body["start_url"] == "/close-all?token=phone-secret"
+    assert body["id"] == "/close-all"
     assert body["display"] == "standalone"
-    assert {"src": "/static/icons/icon-192.png", "sizes": "192x192", "type": "image/png"} in body["icons"]
-    assert {"src": "/static/icons/icon-512.png", "sizes": "512x512", "type": "image/png"} in body["icons"]
+    assert {"src": "/static/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"} in body["icons"]
+    assert {"src": "/static/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"} in body["icons"]
 
 
 def test_manifest_wrong_token_returns_404(client):
@@ -144,9 +145,11 @@ def test_close_all_page_manifest_link_percent_encodes_special_characters_in_toke
 def test_close_all_page_includes_manifest_and_apple_tags(client):
     resp = client.get("/close-all?token=phone-secret")
     body = resp.data.decode("utf-8")
-    assert 'rel="manifest"' in body
-    assert 'apple-touch-icon' in body
+    assert 'href="/manifest.json?token=phone-secret"' in body
+    assert 'href="/static/icons/apple-touch-icon.png"' in body
     assert 'apple-mobile-web-app-capable' in body
+    assert '<meta name="mobile-web-app-capable" content="yes">' in body
+    assert '<meta name="apple-mobile-web-app-title" content="全決済">' in body
 
 
 def test_service_worker_is_served(client):
